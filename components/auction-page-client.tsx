@@ -29,23 +29,23 @@ export default function AuctionPageClient({ initialAuctions, categories }: Aucti
     : null
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex flex-col lg:flex-row gap-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Sidebar with filters */}
         <aside className="lg:w-64 flex-shrink-0">
-          <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 lg:sticky lg:top-6">
             {/* Logo dinámico */}
-            <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center justify-center mb-4 lg:mb-6">
               <div className="relative">
-                <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-4 rounded-2xl shadow-lg transform -rotate-12">
-                  <Gavel className="w-12 h-12 text-white" />
+                <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-3 lg:p-4 rounded-2xl shadow-lg transform -rotate-12">
+                  <Gavel className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
                 </div>
-                <div className="absolute -top-2 -right-2 w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-3xl bg-white border-2 border-blue-600 transition-all duration-300">
+                <div className="absolute -top-2 -right-2 w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow-lg flex items-center justify-center text-2xl lg:text-3xl bg-white border-2 border-blue-600 transition-all duration-300">
                   {selectedCategory?.emoji || "⚽"}
                 </div>
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Filtrar por Categoría</h3>
+            <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4 text-center">Filtrar por Categoría</h3>
             
             {/* Filtro de categorías sin navegación */}
             <div className="space-y-2">
@@ -79,13 +79,13 @@ export default function AuctionPageClient({ initialAuctions, categories }: Aucti
         </aside>
 
         {/* Main content */}
-        <div className="flex-1">
-          <div className="flex justify-between items-center mb-8">
+        <div className="flex-1 min-w-0">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 lg:mb-8 gap-2">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                 {selectedCategory ? `Subastas de ${selectedCategory.name}` : "Subastas Activas"}
               </h2>
-              <p className="text-gray-600 mt-1">{filteredAuctions.length} subastas disponibles</p>
+              <p className="text-sm sm:text-base text-gray-600 mt-1">{filteredAuctions.length} subastas disponibles</p>
             </div>
           </div>
 

@@ -71,8 +71,10 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div className="relative">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-2.5 rounded-xl shadow-lg transform -rotate-12">
-                <Gavel className="h-7 w-7 text-white" />
+              <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-2.5 rounded-xl shadow-lg transform -rotate-12 overflow-hidden">
+                <Gavel className="h-7 w-7 text-white relative z-10" />
+                {/* Efecto de brillo */}
+                <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_ease-in-out_1] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
               </div>
               {/* Sport Ball Badge - Dynamic */}
               <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300">
@@ -81,7 +83,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">SUBASPORT</span>
-              <span className="text-xs text-gray-500 -mt-1">Subastas Deportivas</span>
+              <span className="text-xs text-gray-500 -mt-1 hidden sm:block">Subastas Deportivas</span>
             </div>
           </Link>
 

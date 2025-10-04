@@ -27,16 +27,16 @@ export default function HeroSection({ popularAuctions }: HeroSectionProps) {
             tiempo real.
           </p>
 
-          <div className="flex flex-col lg:flex-row gap-8 justify-center items-start mb-12 max-w-5xl mx-auto">
-            <div className="flex flex-col items-center lg:items-start gap-4">
-              <Button asChild size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg">
+          <div className="flex flex-col lg:flex-row gap-6 justify-center items-center lg:items-start mb-12 max-w-5xl mx-auto px-4">
+            <div className="flex flex-col items-center lg:items-start gap-4 w-full lg:w-auto">
+              <Button asChild size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg w-full sm:w-auto">
                 <Link href="/auth/sign-up">Empezar a Pujar</Link>
               </Button>
             </div>
             
             {/* Subastas más populares */}
             {popularAuctions && (
-              <div className="w-full lg:w-auto lg:min-w-[400px]">
+              <div className="w-full lg:w-auto lg:min-w-[400px] max-w-md lg:max-w-none">
                 {popularAuctions}
               </div>
             )}
