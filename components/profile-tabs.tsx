@@ -110,6 +110,33 @@ export default function ProfileTabs({ profile, auctions, bids }: ProfileTabsProp
     }
   }
 
+  const handleAnonymousToggle = async (checked: boolean) => {
+    setIsAnonymous(checked)
+    
+    // Guardar automáticamente
+    try {
+      const response = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          full_name: profile?.full_name,
+          is_anonymous: checked,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al actualizar preferencia de anonimato')
+      }
+    } catch (error) {
+      console.error("Error al actualizar anonimato:", error)
+      // Revertir el cambio si falla
+      setIsAnonymous(!checked)
+      alert("Error al actualizar la configuración de anonimato")
+    }
+  }
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
       <TabsList className="grid w-full grid-cols-3">
@@ -361,25 +388,27 @@ export default function ProfileTabs({ profile, auctions, bids }: ProfileTabsProp
               )}
             </div>
 
-            <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
-              <Checkbox
-                id="anonymous"
-                checked={isAnonymous}
-                onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
-                disabled={!isEditing}
-              />
-              <div className="flex-1">
-                <Label
-                  htmlFor="anonymous"
-                  className="text-sm font-medium text-gray-900 cursor-pointer flex items-center gap-2"
-                >
-                  <EyeOff className="w-4 h-4" />
-                  Aparecer como anónimo en las pujas
-                </Label>
-                <p className="text-xs text-gray-600 mt-1">
-                  Si activas esta opción, tu nombre no será visible públicamente en el historial de pujas. 
-                  Aparecerás como "Usuario Anónimo" para otros usuarios.
-                </p>
+            <div className="border-t pt-6">
+              <h4 className="text-sm font-semibold text-gray-900 mb-4">Privacidad</h4>
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Checkbox
+                  id="anonymous"
+                  checked={isAnonymous}
+                  onCheckedChange={(checked) => handleAnonymousToggle(checked as boolean)}
+                />
+                <div className="flex-1">
+                  <Label
+                    htmlFor="anonymous"
+                    className="text-sm font-medium text-gray-900 cursor-pointer flex items-center gap-2"
+                  >
+                    <EyeOff className="w-4 h-4" />
+                    Aparecer como anónimo en las pujas
+                  </Label>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Si activas esta opción, tu nombre no será visible públicamente en el historial de pujas. 
+                    Aparecerás como "Usuario Anónimo" para otros usuarios.
+                  </p>
+                </div>
               </div>
             </div>
 
