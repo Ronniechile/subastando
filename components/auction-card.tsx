@@ -101,9 +101,14 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
         )}
       </CardContent>
 
-      <CardFooter className="p-4 pt-0">
-        <Button asChild className="w-full">
+      <CardFooter className="p-4 pt-0 flex gap-2">
+        <Button asChild variant="outline" className="flex-1">
           <Link href={`/auction/${auction.id}`}>Ver Subasta</Link>
+        </Button>
+        <Button asChild className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black font-bold h-12">
+          <Link href={`/auction/${auction.id}?buy_now=true`}>
+            ⚡ Compra Ya
+          </Link>
         </Button>
       </CardFooter>
     </Card>
