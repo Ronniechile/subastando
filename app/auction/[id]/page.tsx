@@ -46,7 +46,8 @@ async function getBids(auctionId: string) {
       profiles!bidder_id (
         id,
         full_name,
-        email
+        email,
+        is_anonymous
       )
     `)
     .eq("auction_id", auctionId)
