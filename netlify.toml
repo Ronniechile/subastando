@@ -1,11 +1,9 @@
 [build]
-  command = "npm install -g pnpm && pnpm install && pnpm build"
+  command = "npm install --legacy-peer-deps && npm run build"
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_USE_PRODUCTION = "false"
-  PNPM_VERSION = "8"
+  NODE_VERSION = "18.17.0"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
