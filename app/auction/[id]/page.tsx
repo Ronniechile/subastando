@@ -117,7 +117,12 @@ export default async function AuctionPage({ params }: AuctionPageProps) {
                   <CardTitle>Hacer Puja</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <BidForm auctionId={auction.id} currentPrice={currentPrice} userId={user.id} />
+                  <BidForm 
+                    auctionId={auction.id} 
+                    currentPrice={currentPrice} 
+                    userId={user.id}
+                    buyNowPrice={auction.buy_now_price}
+                  />
                 </CardContent>
               </Card>
             )}

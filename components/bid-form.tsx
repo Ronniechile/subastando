@@ -34,15 +34,34 @@ interface BidFormProps {
   auctionId: string
   currentPrice: number
   userId: string
+  buyNowPrice?: number | null
 }
 
-export default function BidForm({ auctionId, currentPrice, userId }: BidFormProps) {
+export default function BidForm({ auctionId, currentPrice, userId, buyNowPrice }: BidFormProps) {
   const [bidAmount, setBidAmount] = useState("")
   const [state, formAction] = useActionState(placeBid, null)
+  const [isProcessingBuyNow, setIsProcessingBuyNow] = useState(false)
   const router = useRouter()
 
   const minBid = currentPrice + 1
   const suggestedBids = [minBid, minBid + 5, minBid + 10, minBid + 25]
+
+  const handleBuyNow = async () => {
+    if (!buyNowPrice) return
+    
+    setIsProcessingBuyNow(true)
+    
+    // Crear FormData para enviar la puja
+    const formData = new FormData()
+    formData.append('auctionId', auctionId)
+    formData.append('userId', userId)
+    formData.append('amount', buyNowPrice.toString())
+    
+    // Enviar la puja
+    await formAction(formData)
+    
+    setIsProcessingBuyNow(false)
+  }
 
   // Recargar la página cuando la puja es exitosa
   useEffect(() => {
@@ -115,17 +134,30 @@ export default function BidForm({ auctionId, currentPrice, userId }: BidFormProp
         </div>
         
         {/* Botón de Compra Inmediata */}
-        <div className="pt-2 border-t">
-          <Button
-            onClick={() => setBidAmount(currentPrice.toString())}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold h-12 text-base"
-          >
-            ⚡ Compra Inmediata - ${currentPrice.toFixed(2)}
-          </Button>
-          <p className="text-xs text-gray-500 text-center mt-2">
-            Gana la subasta al instante al precio actual
-          </p>
-        </div>
+        {buyNowPrice && buyNowPrice > 0 && (
+          <div className="pt-2 border-t">
+            <Button
+              type="button"
+              onClick={handleBuyNow}
+              disabled={isProcessingBuyNow}
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold h-12 text-base disabled:opacity-50"
+            >
+              {isProcessingBuyNow ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                <>
+                  ⚡ Compra Inmediata - ${buyNowPrice.toFixed(2)}
+                </>
+              )}
+            </Button>
+            <p className="text-xs text-gray-500 text-center mt-2">
+              Gana la subasta al instante pagando este precio
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )
