@@ -6,6 +6,44 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
+// Función para enviar notificaciones al admin
+async function sendAdminNotification(subject: string, htmlContent: string) {
+  if (!process.env.RESEND_API_KEY) {
+    console.log("[v0] ⚠️ RESEND_API_KEY not configured, skipping admin notification")
+    return false
+  }
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+        to: "soporte@subasport.com",
+        subject: subject,
+        html: htmlContent,
+      }),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log("[v0] ✅ Admin notification sent successfully!")
+      console.log("[v0] Email ID:", data.id)
+      return true
+    } else {
+      const errorText = await response.text()
+      console.error("[v0] ❌ Error sending admin notification:", errorText)
+      return false
+    }
+  } catch (error) {
+    console.error("[v0] Error sending admin notification:", error)
+    return false
+  }
+}
+
 async function sendAuctionEndEmail(
   auctionTitle: string,
   winnerEmail: string,
@@ -721,6 +759,61 @@ export async function createAuction(prevState: any, formData: FormData) {
     }
 
     console.log("[v0] Auction created successfully:", auction)
+
+    // Enviar notificación al admin
+    await sendAdminNotification(
+      "🎯 Nueva Subasta Creada - Subasport",
+      `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+            .info-box { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2563eb; }
+            .label { font-weight: bold; color: #2563eb; }
+            .value { color: #1f2937; margin-left: 10px; }
+            .footer { text-align: center; color: #6b7280; font-size: 12px; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1 style="margin: 0;">🎯 Nueva Subasta Creada</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">Subasport - Sistema de Subastas</p>
+            </div>
+            <div class="content">
+              <p>Se ha creado una nueva subasta en la plataforma:</p>
+              
+              <div class="info-box">
+                <p><span class="label">📦 Título:</span><span class="value">${auction.title}</span></p>
+                <p><span class="label">💰 Precio Inicial:</span><span class="value">$${auction.starting_price.toFixed(2)}</span></p>
+                ${auction.buy_now_price ? `<p><span class="label">⚡ Compra Inmediata:</span><span class="value">$${auction.buy_now_price.toFixed(2)}</span></p>` : ''}
+                <p><span class="label">🆔 ID:</span><span class="value">${auction.id}</span></p>
+                <p><span class="label">📅 Fecha:</span><span class="value">${new Date().toLocaleString("es-ES", { 
+                  dateStyle: "full", 
+                  timeStyle: "short" 
+                })}</span></p>
+                <p><span class="label">⏰ Finaliza:</span><span class="value">${new Date(auction.end_time).toLocaleString("es-ES", { 
+                  dateStyle: "full", 
+                  timeStyle: "short" 
+                })}</span></p>
+              </div>
+              
+              <p style="margin-top: 20px;">Puedes revisar la subasta en el panel de administración.</p>
+              
+              <div class="footer">
+                <p>Este correo fue enviado automáticamente por el Sistema de Subastas</p>
+                <p>© ${new Date().getFullYear()} Subasport.com</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    )
 
     // Revalidate relevant pages
     revalidatePath("/")
