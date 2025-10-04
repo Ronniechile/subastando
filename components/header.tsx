@@ -1,16 +1,19 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Trophy, User, LogOut, Shield } from "lucide-react"
+import { Gavel, User, LogOut, Shield } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { signOut } from "@/lib/actions"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useSearchParams } from "next/navigation"
 
 export default function Header() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [categoryEmoji, setCategoryEmoji] = useState<string>("⚽")
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     const supabase = createClient()
@@ -39,16 +42,47 @@ export default function Header() {
     return () => subscription.unsubscribe()
   }, [])
 
+  // Obtener emoji de la categoría actual
+  useEffect(() => {
+    const categoryId = searchParams?.get("category")
+    if (categoryId) {
+      const supabase = createClient()
+      supabase
+        .from("categories")
+        .select("emoji")
+        .eq("id", categoryId)
+        .single()
+        .then(({ data }) => {
+          if (data && data.emoji) {
+            setCategoryEmoji(data.emoji)
+          } else {
+            setCategoryEmoji("⚽")
+          }
+        })
+    } else {
+      setCategoryEmoji("⚽")
+    }
+  }, [searchParams])
+
   return (
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <Trophy className="h-6 w-6 text-white" />
+          <Link href="/" className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-2.5 rounded-xl shadow-lg transform -rotate-12">
+                <Gavel className="h-7 w-7 text-white" />
+              </div>
+              {/* Sport Ball Badge - Dynamic */}
+              <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full shadow-lg flex items-center justify-center text-lg transition-all duration-300">
+                {categoryEmoji}
+              </div>
             </div>
-            <span className="text-xl font-bold text-gray-900">Subastando.com</span>
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">SUBASPORT</span>
+              <span className="text-xs text-gray-500 -mt-1">Subastas Deportivas</span>
+            </div>
           </Link>
 
           {/* Navigation */}

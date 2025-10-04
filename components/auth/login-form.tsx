@@ -105,7 +105,7 @@ export default function LoginForm() {
           </div>
           <div>
             <CardTitle className="text-3xl font-bold text-gray-900">Bienvenido</CardTitle>
-            <CardDescription className="text-lg text-gray-600 mt-2">Inicia sesión en Subastando.com</CardDescription>
+            <CardDescription className="text-lg text-gray-600 mt-2">Inicia sesión en Subasport.com</CardDescription>
           </div>
         </CardHeader>
 

@@ -16,9 +16,16 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Subastando.com - Subastas de Camisetas Deportivas",
+  title: "Subasport.com - Subastas de Camisetas Deportivas",
   description: "La mejor plataforma para subastar camisetas de tus equipos favoritos",
   generator: "v0.app",
+  icons: [
+    {
+      rel: "icon",
+      type: "image/svg+xml",
+      url: "/favicon.svg",
+    },
+  ],
 }
 
 export default function RootLayout({

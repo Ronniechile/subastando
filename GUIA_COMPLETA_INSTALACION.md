@@ -1,4 +1,4 @@
-# Guía de Configuración y Despliegue - Subastando.com
+# Guía de Configuración y Despliegue - Subasport.com
 
 ## Variables de Entorno Requeridas
 

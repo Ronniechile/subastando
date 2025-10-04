@@ -29,6 +29,7 @@ export interface Category {
   id: string
   name: string
   description: string | null
+  emoji: string | null
   created_at: string
 }
 

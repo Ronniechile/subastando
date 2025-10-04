@@ -1,5 +1,9 @@
 {
   "buildCommand": "pnpm install && pnpm build",
   "framework": "nextjs",
-  "installCommand": "pnpm install --no-frozen-lockfile"
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_SITE_URL": "https://subasport.vercel.app"
+  }
 }

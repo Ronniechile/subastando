@@ -1,4 +1,4 @@
-# 🆓 Guía de Deployment Gratuito - Subastando
+# 🆓 Guía de Deployment Gratuito - Subasport
 
 ## 📊 Comparación de Plataformas Gratuitas
 

@@ -1,0 +1,33 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="64" height="64" rx="12" fill="url(#gradient)"/>
+  
+  <!-- Gavel Handle -->
+  <rect x="18" y="30" width="22" height="4" rx="2" fill="white" opacity="0.95" transform="rotate(-45 29 32)"/>
+  
+  <!-- Gavel Head -->
+  <rect x="32" y="16" width="12" height="6" rx="2" fill="white" opacity="0.95" transform="rotate(-45 38 19)"/>
+  
+  <!-- Gavel Detail -->
+  <line x1="35" y1="18" x2="35" y2="23" stroke="#1E40AF" stroke-width="1.5" transform="rotate(-45 35 20.5)"/>
+  
+  <!-- Sound Block -->
+  <ellipse cx="22" cy="42" rx="8" ry="2.5" fill="white" opacity="0.9"/>
+  <rect x="14" y="39" width="16" height="3" rx="1" fill="white" opacity="0.95"/>
+  
+  <!-- Impact Lines -->
+  <path d="M 42 22 L 46 18" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+  <path d="M 44 24 L 50 22" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+  
+  <!-- Soccer Ball Accent -->
+  <circle cx="48" cy="38" r="5" fill="white" opacity="0.9"/>
+  <circle cx="48" cy="38" r="5" fill="none" stroke="#1E40AF" stroke-width="1"/>
+  <path d="M 48 33 L 49.5 36 L 49 39 L 47 39 L 46.5 36 Z" fill="#1E40AF"/>
+  
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E40AF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

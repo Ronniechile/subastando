@@ -85,7 +85,7 @@ export default function SignUpForm() {
             </div>
           </div>
           <div>
-            <CardTitle className="text-3xl font-bold text-gray-900">Únete a Subastando</CardTitle>
+            <CardTitle className="text-3xl font-bold text-gray-900">Únete a Subasport</CardTitle>
             <CardDescription className="text-lg text-gray-600 mt-2">
               Crea tu cuenta para empezar a pujar
             </CardDescription>

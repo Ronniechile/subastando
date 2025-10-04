@@ -21,7 +21,7 @@ export default async function AdminDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
-                <p className="text-sm text-gray-600">Gestiona las subastas de Subastando.com</p>
+                <p className="text-sm text-gray-600">Gestiona las subastas de Subasport.com</p>
               </div>
             </div>
             <form action={signOutAdmin}>

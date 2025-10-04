@@ -1,4 +1,4 @@
-# Documentación del Sistema de Subastas - Subastando.com
+# Documentación del Sistema de Subastas - Subasport.com
 
 ## Índice
 1. [Introducción](#introducción)
@@ -17,7 +17,7 @@
 
 ## Introducción
 
-**Subastando.com** es una plataforma de subastas en línea desarrollada con tecnologías modernas para facilitar la compra y venta de artículos deportivos, específicamente camisetas de equipos.
+**Subasport.com** es una plataforma de subastas en línea desarrollada con tecnologías modernas para facilitar la compra y venta de artículos deportivos, específicamente camisetas de equipos.
 
 ### Tecnologías Utilizadas
 

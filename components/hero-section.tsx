@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button"
 import { Trophy, Clock, Users, Shield } from "lucide-react"
 import Link from "next/link"
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  popularAuctions?: React.ReactNode
+}
+
+export default function HeroSection({ popularAuctions }: HeroSectionProps) {
   return (
     <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-orange-600 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -23,18 +27,19 @@ export default function HeroSection() {
             tiempo real.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button asChild size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg">
-              <Link href="/auth/sign-up">Empezar a Pujar</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg bg-transparent"
-            >
-              <Link href="/create-auction">Crear Subasta</Link>
-            </Button>
+          <div className="flex flex-col lg:flex-row gap-8 justify-center items-start mb-12 max-w-5xl mx-auto">
+            <div className="flex flex-col items-center lg:items-start gap-4">
+              <Button asChild size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 text-lg">
+                <Link href="/auth/sign-up">Empezar a Pujar</Link>
+              </Button>
+            </div>
+            
+            {/* Subastas más populares */}
+            {popularAuctions && (
+              <div className="w-full lg:w-auto lg:min-w-[400px]">
+                {popularAuctions}
+              </div>
+            )}
           </div>
 
           {/* Features */}

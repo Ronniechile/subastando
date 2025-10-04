@@ -70,7 +70,7 @@ async function sendAuctionEndEmail(
               
               <div class="footer">
                 <p>Este correo fue enviado automáticamente por el Sistema de Subastas</p>
-                <p>© ${new Date().getFullYear()} Subastando.com</p>
+                <p>© ${new Date().getFullYear()} Subasport.com</p>
               </div>
             </div>
           </div>
@@ -734,32 +734,42 @@ export async function createAuction(prevState: any, formData: FormData) {
   }
 }
 
-export async function createCategory(name: string, description?: string) {
+export async function createCategory(formData: FormData) {
   const supabase = await createClient()
 
   try {
+    const name = formData.get("name") as string
+    const description = formData.get("description") as string
+    const emoji = formData.get("emoji") as string
+
+    if (!name || !name.trim()) {
+      return { error: "El nombre es requerido" }
+    }
+
     const { data: category, error } = await supabase
       .from("categories")
       .insert({
         name: name.trim(),
         description: description?.trim() || null,
+        emoji: emoji || "⚽",
       })
       .select()
       .single()
 
     if (error) {
       console.error("Error creating category:", error)
-      throw new Error("Error al crear la categoría")
+      return { error: "Error al crear la categoría: " + error.message }
     }
 
     // Revalidate pages that show categories
     revalidatePath("/admin/dashboard")
     revalidatePath("/create-auction")
+    revalidatePath("/")
 
-    return category
+    return { success: true, category }
   } catch (error) {
     console.error("Create category error:", error)
-    throw new Error("Error al crear la categoría")
+    return { error: "Error inesperado al crear la categoría" }
   }
 }
 

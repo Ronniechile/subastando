@@ -28,6 +28,7 @@ export function CategoryManager() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    emoji: "⚽",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -47,18 +48,30 @@ export function CategoryManager() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!formData.name.trim()) return
 
     try {
       setIsSubmitting(true)
-      await createCategory(formData.name, formData.description)
-      setFormData({ name: "", description: "" })
+      const form = new FormData()
+      form.append("name", formData.name)
+      form.append("description", formData.description)
+      form.append("emoji", formData.emoji)
+      
+      const result = await createCategory(form)
+      
+      if (result.error) {
+        alert(result.error)
+        return
+      }
+      
+      setFormData({ name: "", description: "", emoji: "⚽" })
       setIsDialogOpen(false)
       await loadCategories()
     } catch (error) {
       console.error("Error creating category:", error)
+      alert("Error inesperado al crear la categoría")
     } finally {
       setIsSubmitting(false)
     }
@@ -124,6 +137,18 @@ export function CategoryManager() {
                     rows={3}
                   />
                 </div>
+                <div>
+                  <Label htmlFor="emoji">Emoji</Label>
+                  <Input
+                    id="emoji"
+                    value={formData.emoji}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, emoji: e.target.value }))}
+                    placeholder="Ej: ⚽, 🏀, 🎾..."
+                    maxLength={2}
+                    required
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Usa un emoji deportivo (ej: ⚽ 🏀 ⚾ 🎾 🏈 🏒)</p>
+                </div>
                 <div className="flex justify-end space-x-2">
                   <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Cancelar
@@ -148,7 +173,10 @@ export function CategoryManager() {
             {categories.map((category) => (
               <div key={category.id} className="border rounded-lg p-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <Badge variant="secondary">{category.name}</Badge>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">{category.emoji || "⚽"}</span>
+                    <Badge variant="secondary">{category.name}</Badge>
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
