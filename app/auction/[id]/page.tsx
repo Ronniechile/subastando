@@ -161,15 +161,29 @@ export default async function AuctionPage({ params }: AuctionPageProps) {
               </Card>
             )}
 
-            {/* Bid history */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Historial de Pujas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <BidHistory bids={bids} />
-              </CardContent>
-            </Card>
+            {/* Bid history - Solo visible para usuarios autenticados */}
+            {user ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Historial de Pujas</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <BidHistory bids={bids} />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Historial de Pujas</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center py-8">
+                  <p className="text-gray-600 mb-4">Inicia sesión para ver el historial de pujas</p>
+                  <a href="/auth/login" className="text-blue-600 hover:underline font-medium">
+                    Iniciar sesión
+                  </a>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </main>

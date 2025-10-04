@@ -10,6 +10,7 @@ interface Bid {
     id: string
     full_name: string | null
     email: string
+    is_anonymous: boolean | null
   } | null
 }
 
@@ -34,12 +35,16 @@ export default function BidHistory({ bids }: BidHistoryProps) {
           <div className="flex items-center space-x-3">
             <Avatar className="h-8 w-8">
               <AvatarFallback className="text-xs">
-                {bid.profiles?.full_name?.[0] || bid.profiles?.email?.[0] || "?"}
+                {bid.profiles?.is_anonymous 
+                  ? "A" 
+                  : (bid.profiles?.full_name?.[0] || bid.profiles?.email?.[0] || "?")}
               </AvatarFallback>
             </Avatar>
             <div>
               <p className="font-medium text-sm">
-                {bid.profiles?.full_name || bid.profiles?.email || "Usuario anónimo"}
+                {bid.profiles?.is_anonymous 
+                  ? "Usuario Anónimo" 
+                  : (bid.profiles?.full_name || bid.profiles?.email || "Usuario")}
               </p>
               <p className="text-xs text-gray-500">
                 {formatDistanceToNow(new Date(bid.created_at), { addSuffix: true, locale: es })}

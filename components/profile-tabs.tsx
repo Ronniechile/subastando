@@ -1,13 +1,15 @@
 "use client"
 
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { User, Trophy, TrendingUp, Calendar, DollarSign } from "lucide-react"
+import { User, Trophy, TrendingUp, Calendar, DollarSign, EyeOff } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import CountdownTimer from "@/components/countdown-timer"
@@ -16,6 +18,7 @@ interface Profile {
   id: string
   email: string
   full_name: string | null
+  is_anonymous: boolean | null
   created_at: string
 }
 
@@ -68,16 +71,49 @@ interface ProfileTabsProps {
 
 export default function ProfileTabs({ profile, auctions, bids }: ProfileTabsProps) {
   const [activeTab, setActiveTab] = useState("overview")
+  const [isEditing, setIsEditing] = useState(false)
+  const [fullName, setFullName] = useState(profile?.full_name || "")
+  const [isAnonymous, setIsAnonymous] = useState(profile?.is_anonymous || false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const activeAuctions = auctions.filter((auction) => auction.status === "active")
   const completedAuctions = auctions.filter((auction) => auction.status === "ended")
   const totalEarnings = completedAuctions.reduce((sum, auction) => sum + auction.current_price, 0)
 
+  const handleSaveProfile = async () => {
+    setIsSaving(true)
+    try {
+      const response = await fetch('/api/profile/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          full_name: fullName,
+          is_anonymous: isAnonymous,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al actualizar el perfil')
+      }
+
+      setIsEditing(false)
+      alert("Perfil actualizado correctamente")
+      // Recargar la página para reflejar los cambios
+      window.location.reload()
+    } catch (error) {
+      console.error("Error al actualizar perfil:", error)
+      alert("Error al actualizar el perfil")
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-      <TabsList className="grid w-full grid-cols-4">
+      <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="overview">Resumen</TabsTrigger>
-        <TabsTrigger value="auctions">Mis Subastas</TabsTrigger>
         <TabsTrigger value="bids">Mis Pujas</TabsTrigger>
         <TabsTrigger value="settings">Configuración</TabsTrigger>
       </TabsList>
@@ -204,66 +240,6 @@ export default function ProfileTabs({ profile, auctions, bids }: ProfileTabsProp
         </div>
       </TabsContent>
 
-      <TabsContent value="auctions" className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Mis Subastas</h2>
-          <Button asChild>
-            <Link href="/create-auction">Crear Nueva Subasta</Link>
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {auctions.map((auction) => (
-            <Card key={auction.id} className="overflow-hidden">
-              <div className="relative h-48 bg-gray-100">
-                {auction.image_url ? (
-                  <Image
-                    src={auction.image_url || "/placeholder.svg"}
-                    alt={auction.title}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <Trophy className="w-12 h-12 text-gray-400" />
-                  </div>
-                )}
-                <div className="absolute top-3 right-3">
-                  <CountdownTimer endTime={auction.end_time} variant="badge" status={auction.status as "active" | "ended" | "cancelled"} />
-                </div>
-              </div>
-              <CardContent className="p-4">
-                <h3 className="font-semibold text-lg mb-2 line-clamp-1">{auction.title}</h3>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-500">Precio actual</span>
-                  <span className="font-bold text-green-600">${auction.current_price.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm text-gray-500">Pujas</span>
-                  <span className="font-medium">{auction.bids.length}</span>
-                </div>
-                <Button asChild variant="outline" className="w-full bg-transparent">
-                  <Link href={`/auction/${auction.id}`}>Ver Detalles</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {auctions.length === 0 && (
-          <Card>
-            <CardContent className="text-center py-12">
-              <Trophy className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No tienes subastas</h3>
-              <p className="text-gray-500 mb-4">Crea tu primera subasta para empezar a vender</p>
-              <Button asChild>
-                <Link href="/create-auction">Crear Subasta</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-      </TabsContent>
-
       <TabsContent value="bids" className="space-y-6">
         <h2 className="text-2xl font-bold">Mis Pujas</h2>
 
@@ -349,26 +325,96 @@ export default function ProfileTabs({ profile, auctions, bids }: ProfileTabsProp
       <TabsContent value="settings" className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <User className="mr-2 h-5 w-5" />
-              Información Personal
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <User className="mr-2 h-5 w-5" />
+                Información Personal
+              </div>
+              {!isEditing && (
+                <Button onClick={() => setIsEditing(true)} variant="outline" size="sm">
+                  Editar
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div>
               <Label className="text-sm font-medium text-gray-700">Email</Label>
-              <p className="text-gray-900">{profile?.email}</p>
+              <p className="text-gray-900 mt-1">{profile?.email}</p>
+              <p className="text-xs text-gray-500 mt-1">El email no se puede modificar</p>
             </div>
+            
             <div>
-              <Label className="text-sm font-medium text-gray-700">Nombre Completo</Label>
-              <p className="text-gray-900">{profile?.full_name || "No especificado"}</p>
+              <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
+                Nombre Completo
+              </Label>
+              {isEditing ? (
+                <Input
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Ingresa tu nombre completo"
+                  className="mt-1"
+                />
+              ) : (
+                <p className="text-gray-900 mt-1">{profile?.full_name || "No especificado"}</p>
+              )}
             </div>
+
+            <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+              <Checkbox
+                id="anonymous"
+                checked={isAnonymous}
+                onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
+                disabled={!isEditing}
+              />
+              <div className="flex-1">
+                <Label
+                  htmlFor="anonymous"
+                  className="text-sm font-medium text-gray-900 cursor-pointer flex items-center gap-2"
+                >
+                  <EyeOff className="w-4 h-4" />
+                  Aparecer como anónimo en las pujas
+                </Label>
+                <p className="text-xs text-gray-600 mt-1">
+                  Si activas esta opción, tu nombre no será visible públicamente en el historial de pujas. 
+                  Aparecerás como "Usuario Anónimo" para otros usuarios.
+                </p>
+              </div>
+            </div>
+
             <div>
               <Label className="text-sm font-medium text-gray-700">Miembro desde</Label>
-              <p className="text-gray-900">
-                {profile?.created_at ? new Date(profile.created_at).toLocaleDateString("es-ES") : "N/A"}
+              <p className="text-gray-900 mt-1">
+                {profile?.created_at ? new Date(profile.created_at).toLocaleDateString("es-ES", {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                }) : "N/A"}
               </p>
             </div>
+
+            {isEditing && (
+              <div className="flex gap-3 pt-4 border-t">
+                <Button
+                  onClick={handleSaveProfile}
+                  disabled={isSaving}
+                  className="flex-1"
+                >
+                  {isSaving ? "Guardando..." : "Guardar Cambios"}
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsEditing(false)
+                    setFullName(profile?.full_name || "")
+                  }}
+                  variant="outline"
+                  disabled={isSaving}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </TabsContent>
