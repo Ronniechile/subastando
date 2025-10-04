@@ -7,6 +7,10 @@ import { Suspense } from "react"
 import { AuctionCardSkeleton } from "@/components/auction-card"
 import { getCategories } from "@/lib/actions"
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getActiveAuctions() {
   const supabase = await createClient()
 
