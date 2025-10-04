@@ -4,6 +4,7 @@ import HeroSection from "@/components/hero-section"
 import { getCategories } from "@/lib/actions"
 import AuctionPageClient from "@/components/auction-page-client"
 import Link from "next/link"
+import Image from "next/image"
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -69,10 +70,29 @@ export default async function HomePage() {
                       href={`/auction/${auction.id}`}
                       className="block p-3 rounded-lg hover:bg-white/20 transition-colors mb-2 last:mb-0"
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-sm">
-                          {index + 1}
+                      <div className="flex items-center gap-3">
+                        {/* Imagen de la subasta */}
+                        <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-white/20 relative">
+                          {auction.image_url ? (
+                            <Image
+                              src={auction.image_url}
+                              alt={auction.title}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <svg className="w-8 h-8 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              </svg>
+                            </div>
+                          )}
+                          {/* Badge de ranking */}
+                          <div className="absolute -top-1 -left-1 w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-xs border-2 border-white">
+                            {index + 1}
+                          </div>
                         </div>
+                        
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-semibold text-white truncate">
                             {auction.title}
