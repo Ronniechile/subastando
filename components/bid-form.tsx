@@ -98,7 +98,7 @@ export default function BidForm({ auctionId, currentPrice, userId }: BidFormProp
       </form>
 
       {/* Quick bid buttons */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <p className="text-sm text-gray-600">Pujas rápidas:</p>
         <div className="grid grid-cols-2 gap-2">
           {suggestedBids.map((amount) => (
@@ -112,6 +112,19 @@ export default function BidForm({ auctionId, currentPrice, userId }: BidFormProp
               ${amount.toFixed(2)}
             </Button>
           ))}
+        </div>
+        
+        {/* Botón de Compra Inmediata */}
+        <div className="pt-2 border-t">
+          <Button
+            onClick={() => setBidAmount(currentPrice.toString())}
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold h-12 text-base"
+          >
+            ⚡ Compra Inmediata - ${currentPrice.toFixed(2)}
+          </Button>
+          <p className="text-xs text-gray-500 text-center mt-2">
+            Gana la subasta al instante al precio actual
+          </p>
         </div>
       </div>
     </div>
