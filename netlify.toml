@@ -1,9 +1,10 @@
 [build]
-  command = "npm install --legacy-peer-deps && npm run build"
+  command = "npm install -g pnpm@8 && pnpm install --no-frozen-lockfile && pnpm build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18.17.0"
+  NPM_FLAGS = "--legacy-peer-deps"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
